@@ -31,15 +31,15 @@ const {
 
 钩子的用法
 
-| 序号 | 钩子名称 | 执行方式 | 使用要点 |
-| :----: | :---- | :---- | :--- | :--- |
+| 序号 | 钩子名称   | 执行方式 | 使用要点 |
+| :---: | ------ | -------- | ------ |
 | 1 | SyncHook | 同步串行 | 不关心 task 的返回值 |
-| 2 | SyncBailHook | 同步串行 | 只要 task 返回值不为 `undefined`，则跳过剩下所有的 tasks |
-| 3 | SyncWaterfallHook | 同步串行 | 记录监听函数的不为 `undefined`的返回值，传给下一个的监听函数 |
-| 4 | SyncLoopHook | 同步循环 | 如果 task 返回值 `!== undefined`，则重新重头循环一遍 tasks，直到返回值 === undefined，则继续向下执行其他tasks，以此类推 |
-| 5 | AsyncParallelHook | 异步并发 | 不关心 task 返回值，如果一个done返回 err，则直接执行 done，并跳过后续所有还未执行的 tasks，如果任一 task 缺失 done 调用，则不会执行 done |
+| 2 | SyncBailHook | 同步串行 | 只要 task 返回值不为 `undefined`，<br>则跳过剩下所有的 tasks |
+| 3 | SyncWaterfallHook | 同步串行 | 记录监听函数的不为 `undefined`的返回值，<br>传给下一个的监听函数 |
+| 4 | SyncLoopHook | 同步循环 | 如果 task 返回值 `!== undefined`，<br>则重新重头循环一遍 tasks，直到返回值 === undefined，<br>则继续向下执行其他tasks，以此类推 |
+| 5 | AsyncParallelHook | 异步并发 | 不关心 task 返回值，如果一个done返回 err，<br>则直接执行 done，并跳过后续所有还未执行的 tasks，<br>如果任一 task 缺失 done 调用，则不会执行 done |
 | 6 | AsyncParallelBailHook | 异步并发 | 具有 bail 功能的异步并发钩子 |
-| 7 | AsyncSeriesHook | 异步串行 | 不关系 task 返回值，缺失任一 task，则终止后续所有 tasks |
+| 7 | AsyncSeriesHook | 异步串行 | 不关系 task 返回值，缺失任一 task，<br>则终止后续所有 tasks |
 | 8 | AsyncSeriesBailHook | 异步串行 | 具有 bail 功能的异步串行钩子 |
 | 9 | AsyncSeriesWaterfallHook | 异步串行 | 具有 waterfall 功能的异步串行钩子 |
 
