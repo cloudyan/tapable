@@ -31,8 +31,8 @@ const {
 
 钩子的用法
 
-| 序号 | 钩子名称   | 执行方式 | 使用要点 |
-| :---: | ------ | -------- | ------ |
+| 序号 | 钩子名称 | 执行方式 | 使用要点 |
+| :---: | ----- | ------- | ------ |
 | 1 | SyncHook | 同步串行 | 不关心 task 的返回值 |
 | 2 | SyncBailHook | 同步串行 | 只要 task 返回值不为 `undefined`，<br>则跳过剩下所有的 tasks |
 | 3 | SyncWaterfallHook | 同步串行 | 记录监听函数的不为 `undefined`的返回值，<br>传给下一个的监听函数 |
@@ -43,15 +43,19 @@ const {
 | 8 | AsyncSeriesBailHook | 异步串行 | 具有 bail 功能的异步串行钩子 |
 | 9 | AsyncSeriesWaterfallHook | 异步串行 | 具有 waterfall 功能的异步串行钩子 |
 
-参考：
+这篇 [blog](https://www.cnblogs.com/Darlietoothpaste/p/10474871.html) 有图示执行流程，可以结合理解原理，此处帖图如下
 
-- [webpack4.0源码分析之Tapable](https://segmentfault.com/a/1190000016706654)
+![sync](img/bail.jpg)
+
+![sync](img/loop.jpg)
+
+图示比较直观，体会效果，直接看 examples 示例
 
 ## 用法
 
 All Hook constructors take one optional argument, which is a list of argument names as strings.
 
-深刻理解，参见示例
+深刻理解，参见[示例](../examples)
 
 Sync 类型的钩子
 
@@ -81,11 +85,7 @@ AsyncParallelHook 为异步并行执行
 - [AsyncSeriesBailHook](../examples/AsyncSeriesBailHook.js)
 - [AsyncSeriesWaterfallHook](../examples/AsyncParallelBailHook.js)
 
-这篇 [blog](https://www.cnblogs.com/Darlietoothpaste/p/10474871.html) 有图示执行流程，可以结合理解原理
-
-> **注意：**
-
-在 `tapable` 源码中，注册事件的方法 `tab`、`tapAsync`、`tapPromise` 和触发事件的方法 `call`、`callAsync`、`promise` 都是通过 `compile` 方法快速编译出来的，如果想了解其实现 ，可以查看 `HookCodeFactory.js` 中的 `callTapsSeries`、`callTapsLooping`、`callTapsParallel` 三个方法的 code 输出。
+> **注意：** 在 `tapable` 源码中，注册事件的方法 `tab`、`tapAsync`、`tapPromise` 和触发事件的方法 `call`、`callAsync`、`promise` 都是通过 `compile` 方法快速编译出来的，如果想了解其实现 ，可以查看 `HookCodeFactory.js` 中的 `callTapsSeries`、`callTapsLooping`、`callTapsParallel` 三个方法的 code 输出。
 
 ## 综合示例
 
@@ -93,7 +93,13 @@ The best practice is to expose all hooks of a class in a `hooks` property:
 
 这个是参考官方示例，综合使用场景展示完整的示例
 
-实现参看 [examples](../examples/index.js)
+具体参看 [examples](../examples/index.js)
+
+待实现...
+
+参考：
+
+- [webpack4.0源码分析之Tapable](https://segmentfault.com/a/1190000016706654)
 
 ```js
 class Car {
