@@ -28,6 +28,13 @@
   "main": "lib/index.js",
   "types": "./tapable.d.ts",
   "scripts": {
+    "dev1": "npx babel-node ./examples/SyncHook.js",
+    "dev2": "npx babel-node ./examples/SyncBailHook.js",
+    "dev3": "npx babel-node ./examples/SyncWaterfallHook.js",
+    "dev4": "npx babel-node ./examples/SyncLoopHook.js",
+    "dev5": "npx babel-node ./examples/AsyncParallelHook.js",
+    "debug5": "npx babel-node --inspect-brk ./examples/AsyncParallelHook.js",
+    "dev6": "npx babel-node ./examples/AsyncSeriesHook.js",
     "test": "jest",
     "travis": "yarn pretty-lint && jest --coverage && codecov",
     "pretty-lint": "prettier --check lib/*.js lib/__tests__/*.js",

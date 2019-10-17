@@ -1,5 +1,7 @@
 # Tapable
 
+Webpack 本质上是一种事件流的机制，它的工作流程就是将各个插件串联起来，而实现这一切的核心就是 tapable，Webpack 中最核心的，负责编译的 Compiler 和负责创建 bundles 的 Compilation 都是 tapable 构造函数的实例。
+
 The tapable package expose many Hook classes, which can be used to create hooks for plugins.
 
 ``` javascript
@@ -20,35 +22,80 @@ const {
 
 常用的钩子主要包含以下几种，分为同步和异步，异步又分为并发执行和串行执行，如下图：
 
+![tapable](img/tapable.png)
+
+为方便描述
+
+- 记所有事件处理函数队列为 tasks
+- 记单个事件处理函数为 task
+
 钩子的用法
 
 | 序号 | 钩子名称 | 执行方式 | 使用要点 |
 |:==== |:====== |:====== |:======= |
-| 1 | SyncHook | 同步串行 | 不关心监听函数的返回值 |
-| 2 | SyncBailHook | 同步串行 | 只要监听函数中有一个函数的返回值不为 `null`，则跳过剩下所有的逻辑 |
-| 3 | SyncWaterfallHook | 同步串行 | 上一个监听函数的返回值可以传给下一个监听函数 |
-| 4 | SyncLoopHook | 同步循环 | 当监听函数被触发的时候，如果该监听函数返回true时则这个监听函数会反复执行，如果返回 `undefined` 则表示退出循环 |
-| 5 | AsyncParallelHook | 异步并发 | 不关心监听函数的返回值 |
-| 6 | AsyncParallelBailHook | 异步并发 | 只要监听函数的返回值不为 `null`，就会忽略后面的监听函数执行，直接跳跃到`callAsync`等触发函数绑定的回调函数，然后执行这个被绑定的回调函数 |
-| 7 | AsyncSeriesHook | 异步串行 | 不关系`callback()`的参数 |
-| 8 | AsyncSeriesBailHook | 异步串行 | `callback()`的参数不为`null`，就会直接执行`callAsync`等触发函数绑定的回调函数 |
-| 9 | AsyncSeriesWaterfallHook | 异步串行 | 上一个监听函数的中的`callback(err, data)`的第二个参数,可以作为下一个监听函数的参数 |
+| 1 | SyncHook | 同步串行 | 不关心 task 的返回值 |
+| 2 | SyncBailHook | 同步串行 | 只要 task 返回值不为 `undefined`，则跳过剩下所有的 tasks |
+| 3 | SyncWaterfallHook | 同步串行 | 记录监听函数的不为 `undefined`的返回值，传给下一个的监听函数 |
+| 4 | SyncLoopHook | 同步循环 | 如果 task 返回值 `!== undefined`，则重新重头循环一遍 tasks，直到返回值 === undefined，则继续向下执行其他tasks，以此类推 |
+| 5 | AsyncParallelHook | 异步并发 | 不关心 task 返回值，如果一个done返回 err，则直接执行 done，并跳过后续所有还未执行的 tasks，如果任一 task 缺失 done 调用，则不会执行 done |
+| 6 | AsyncParallelBailHook | 异步并发 | 具有 bail 功能的异步并发钩子 |
+| 7 | AsyncSeriesHook | 异步串行 | 不关系 task 返回值，缺失任一 task，则终止后续所有 tasks |
+| 8 | AsyncSeriesBailHook | 异步串行 | 具有 bail 功能的异步串行钩子 |
+| 9 | AsyncSeriesWaterfallHook | 异步串行 | 具有 waterfall 功能的异步串行钩子 |
 
 参考：
 
-- [webpack4.0源码分析之Tapable](https://juejin.im/post/5abf33f16fb9a028e46ec352)
+- [webpack4.0源码分析之Tapable](https://segmentfault.com/a/1190000016706654)
 
 ## 用法
 
 All Hook constructors take one optional argument, which is a list of argument names as strings.
 
-``` js
-const hook = new SyncHook(["arg1", "arg2", "arg3"]);
-```
+参见示例
+
+Sync 类型的钩子
+
+> Sync 类型 "钩子" 执行的插件都是顺序执行的，并且只能使用 `tap` 注册，可以使用 `call` 调用。
+
+- [SyncHook](../examples/SyncHook.js)
+- [SyncBailHook](../examples/SyncBailHook.js)
+- [SyncWaterfallHook](../examples/SyncWaterfallHook.js)
+- [SyncLoopHook](../examples/SyncLoopHook.js)
+
+Async 类型的钩子
+
+> Async 类型可以使用 `tap`、`tapAsync` 和 `tapPromise` 注册不同类型的插件 “钩子”，分别可以通过 `call`、`callAsync` 和 `promise` 方法调用。
+
+**NOTE:** `tapAsync` `tapPromise` 注册的事件，都可以被 `callAsync` 或 `promise` 调用
+
+AsyncParallelHook 为异步并行执行
+
+- 通过 `tapAsync` 注册的事件，通过 `callAsync` 触发
+  - `callAsync` 的最后一个参数为回调函数 done，在所有事件处理函数执行完毕后执行
+- 通过 `tapPromise` 注册的事件，通过 `promise` 触发（返回值可以调用 `then` 方法）
+  - 要求 `tapPromise` 注册的事件，必须返回一个 Promise 实例
+
+- [AsyncParallelHook](../examples/AsyncParallelHook.js)
+- [AsyncParallelBailHook](../examples/AsyncParallelBailHook.js)
+- [AsyncSeriesHook](../examples/AsyncSeriesHook.js)
+- [AsyncSeriesBailHook](../examples/AsyncSeriesBailHook.js)
+- [AsyncSeriesWaterfallHook](../examples/AsyncParallelBailHook.js)
+
+这篇 [blog](https://www.cnblogs.com/Darlietoothpaste/p/10474871.html) 有图示执行流程，可以结合理解原理
+
+> **注意：**
+
+在 `tapable` 源码中，注册事件的方法 `tab`、`tapAsync`、`tapPromise` 和触发事件的方法 `call`、`callAsync`、`promise` 都是通过 `compile` 方法快速编译出来的，如果想了解其实现 ，可以查看 `HookCodeFactory.js` 中的 `callTapsSeries`、`callTapsLooping`、`callTapsParallel` 三个方法的 code 输出。
+
+## 综合示例
 
 The best practice is to expose all hooks of a class in a `hooks` property:
 
-``` js
+这个是参考官方示例，综合使用场景展示完整的示例
+
+实现参看 [examples](../examples/index.js)
+
+```js
 class Car {
   constructor() {
     this.hooks = {
