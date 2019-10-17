@@ -2,6 +2,10 @@
 
 Webpack 本质上是一种事件流的机制，它的工作流程就是将各个插件串联起来，而实现这一切的核心就是 tapable，Webpack 中最核心的，负责编译的 Compiler 和负责创建 bundles 的 Compilation 都是 tapable 构造函数的实例。
 
+了解 tapable，也可以先看 [tapable-0.2](https://github.com/webpack/tapable/tree/tapable-0.2) 版本了解下，整个源码只有400行，相对容易理解。
+
+也可以直接看最新版，结合示例演示，操作模拟一遍实现更直观
+
 The tapable package expose many Hook classes, which can be used to create hooks for plugins.
 
 ``` javascript
