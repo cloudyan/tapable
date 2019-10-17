@@ -35,6 +35,7 @@
     "dev5": "npx babel-node ./examples/AsyncParallelHook.js",
     "debug5": "npx babel-node --inspect-brk ./examples/AsyncParallelHook.js",
     "dev6": "npx babel-node ./examples/AsyncSeriesHook.js",
+    "dev7": "npx babel-node ./examples/AsyncParallelBailHook.js",
     "test": "jest",
     "travis": "yarn pretty-lint && jest --coverage && codecov",
     "pretty-lint": "prettier --check lib/*.js lib/__tests__/*.js",

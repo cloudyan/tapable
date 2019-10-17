@@ -57,12 +57,31 @@ class MockSyncLoopHook {
 
 		// 依次执行事件处理函数，如果返回值 !== undefined，则重新来一遍 tasks
 		// 直到返回 undefined，则继续向下执行其他事件处理函数
-		this.tasks.forEach(task => {
-			let ret;
+		// forEach 无法中断，不适合实现此方法
+		// this.tasks.forEach(task => {
+		// 	let ret;
+		// 	do {
+		// 		ret = this.task(...args);
+		// 	} while (ret !== undefined);
+		// });
+
+		// or
+		let loop
+		do {
+			loop = false
+			let i = 0
+			let result = false
+			let task
+
 			do {
-				ret = this.task(...args);
-			} while (ret !== undefined);
-		});
+				task = this.tasks[i]
+				result = task(...args)
+				if (result !== undefined) {
+					loop = true
+				}
+				i++
+			} while (result === undefined && i < this.tasks.length)
+		} while (loop)
 	}
 }
 

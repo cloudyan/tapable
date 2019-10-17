@@ -24,8 +24,8 @@ syncWaterfallHook.tap("3", data => {
 });
 
 // 触发事件，让监听函数执行
-let ret = syncWaterfallHook.call("panda", 18);
-console.log("call", ret);
+let res = syncWaterfallHook.call("panda", 18);
+console.log("call", res);
 
 // 1 panda 18
 // 2 1
@@ -51,12 +51,21 @@ class MockSyncWaterfallHook {
 		args = args.slice(0, this.args.length);
 
 		// 依次执行事件处理函数，事件处理函数的返回值作为下一个事件处理函数的参数
-		let [first, ...others] = this.tasks;
-		return others.reduce((ret, task) => task(ret), first(...args));
+		// 此方法有缺陷
+		// 可以实现自定义 reduce 方法，中间函数无返回值的，支持返回值穿透
+		// let [first, ...others] = this.tasks;
+		// return others.reduce((ret, task) => task(ret), first(...args));
+
+		// or
+		let result = null;
+		for (let i = 0; i < this.tasks.length; i++) {
+			const task = this.tasks[i];
+			result = i === 0 ? task(...args) : task(result)
+		}
+		return result;
 	}
 }
 
-// 实现自定义 reduce 方法，中间函数无返回值的，支持穿透
 
 // 上面代码中 `call` 的逻辑是将存储事件处理函数的 `tasks` 拆成两部分，分别为第一个事件处理函数，和存储其余事件处理函数的数组，
 // 使用 `reduce` 进行归并，将第一个事件处理函数执行后的返回值作为归并的初始值，依次调用其余事件处理函数并传递上一次归并的返回值。

@@ -27,9 +27,11 @@ class MockSyncHook {
 		this.args = args;
 		this.tasks = [];
 	}
+	// 订阅
 	tap(name, task) {
 		this.tasks.push(task);
 	}
+	// 发布
 	call(...args) {
 		// 也可在参数不足时抛出异常
 		if (args.length < this.args.length) throw new Error('参数不足');

@@ -39,10 +39,17 @@ class MockSyncBailHook {
 		args = args.slice(0, this.args.length);
 
 		// 依次执行事件处理函数，如果有返回值则立即停止循环，即实现“保险”的功能
-		let i = 0, ret;
-		do {
-			ret = this.tasks[i++](...args);
-		} while (ret === undefined && i < args.length);
+		// let i = 0, ret;
+		// do {
+		// 	ret = this.tasks[i++](...args);
+		// } while (ret === undefined && i < this.tasks.length);
+
+		// or
+		for(let j = 0; j < this.tasks.length; j++) {
+			const task = this.tasks[j]
+			const result = task(...args)
+			if (result !== undefined) return
+		}
 	}
 }
 

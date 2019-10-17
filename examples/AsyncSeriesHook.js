@@ -113,7 +113,8 @@ class MockAsyncSeriesHook {
 		// 直到所有事件处理函数都执行完，调用 callAsync 的回调
 		// 如果事件处理函数中没有调用 next，则无法继续
 		let i = 0;
-		const next = () => {
+		const next = err => {
+			if (err) return finalCallback(err)
 			const task = this.tasks[i++];
 			task ? task(...args, next) : finalCallback();
 		};

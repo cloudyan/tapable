@@ -6,7 +6,7 @@
 const { AsyncParallelHook } = require('../lib');
 
 // 创建实例
-const tapParallelHook = new AsyncParallelHook(['name', 'age']);
+// const tapParallelHook = new AsyncParallelHook(['name', 'age']);
 const asyncParallelHook = new AsyncParallelHook(['name', 'age']);
 const promiseParallelHook = new AsyncParallelHook(['name', 'age']);
 
