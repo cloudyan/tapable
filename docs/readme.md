@@ -51,7 +51,7 @@ const {
 
 All Hook constructors take one optional argument, which is a list of argument names as strings.
 
-参见示例
+深刻理解，参见示例
 
 Sync 类型的钩子
 

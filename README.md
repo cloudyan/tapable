@@ -1,5 +1,7 @@
 # Tapable
 
+[中文](./docs/readme.md)
+
 The tapable package expose many Hook classes, which can be used to create hooks for plugins.
 
 ``` javascript
