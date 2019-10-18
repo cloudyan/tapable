@@ -66,7 +66,7 @@ Sync 类型的钩子
 > Sync 类型 "钩子" 执行的插件都是顺序执行的，并且只能使用 `tap` 注册，可以使用 `call` 调用。
 
 - [SyncHook](../examples/SyncHook.js)
-- [SyncBailHook](../examples/SyncBailHook.js)
+- [SyncBailHook](../examples/SyncBailHook.js) `optimizeChunks`, `optimizeChunkModules`
 - [SyncWaterfallHook](../examples/SyncWaterfallHook.js)
 - [SyncLoopHook](../examples/SyncLoopHook.js)
 
@@ -85,11 +85,13 @@ AsyncParallelHook 为异步并行执行
 
 - [AsyncParallelHook](../examples/AsyncParallelHook.js)
 - [AsyncParallelBailHook](../examples/AsyncParallelBailHook.js)
-- [AsyncSeriesHook](../examples/AsyncSeriesHook.js)
+- [AsyncSeriesHook](../examples/AsyncSeriesHook.js) `emit`, `run`
 - [AsyncSeriesBailHook](../examples/AsyncSeriesBailHook.js)
-- [AsyncSeriesWaterfallHook](../examples/AsyncParallelBailHook.js)
+- [AsyncSeriesWaterfallHook](../examples/AsyncParallelBailHook.js) `before-resolve`, `after-resolve`
 
 > **注意：** 在 `tapable` 源码中，注册事件的方法 `tab`、`tapAsync`、`tapPromise` 和触发事件的方法 `call`、`callAsync`、`promise` 都是通过 `compile` 方法快速编译出来的，如果想了解其实现 ，可以查看 `HookCodeFactory.js` 中的 `callTapsSeries`、`callTapsLooping`、`callTapsParallel` 三个方法的 code 输出。
+
+这些钩子在 webpack 中使用模式，可以参看 [synchronous hooks(同步钩子)](https://webpack.docschina.org/contribute/writing-a-plugin/#synchronous-hooks-同步钩子-)
 
 ## 综合示例
 
