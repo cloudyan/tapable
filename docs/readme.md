@@ -91,6 +91,8 @@ AsyncParallelHook 为异步并行执行
 
 > **注意：** 在 `tapable` 源码中，注册事件的方法 `tab`、`tapAsync`、`tapPromise` 和触发事件的方法 `call`、`callAsync`、`promise` 都是通过 `compile` 方法快速编译出来的，如果想了解其实现 ，可以查看 `HookCodeFactory.js` 中的 `callTapsSeries`、`callTapsLooping`、`callTapsParallel` 三个方法的 code 输出。
 
+这里有个疑问，为什么 tapable 注册事件和触发事件的方法，要使用 compile 方法编译出来，而不是直接实现出来？
+
 这些钩子在 webpack 中使用模式，可以参看 [synchronous hooks(同步钩子)](https://webpack.docschina.org/contribute/writing-a-plugin/#synchronous-hooks-同步钩子-)
 
 ## 综合示例
@@ -163,6 +165,7 @@ myCar.hooks.calculateRoutes.tap("CachedRoutesPlugin", (source, target, routesLis
     routesList.add(cachedRoute);
 })
 ```
+
 The class declaring these hooks need to call them:
 
 ``` js

@@ -48,7 +48,7 @@ class MockSyncBailHook {
 		for(let j = 0; j < this.tasks.length; j++) {
 			const task = this.tasks[j]
 			const result = task(...args)
-			if (result !== undefined) return
+			if (result !== undefined) break
 		}
 	}
 }
